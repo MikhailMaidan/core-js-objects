@@ -33,12 +33,14 @@ function shallowCopy(obj) {
  *    mergeObjects([]) => {}
  */
 function mergeObjects(objects) {
-  return objects.reduce((merged, obj) => {
-    const newMerged = { ...merged };
-    Object.keys(obj).forEach((key) => {
-      newMerged[key] = (newMerged[key] || 0) + obj[key];
+  return objects.reduce((acc, obj) => {
+    const nextAcc = { ...acc };
+
+    Object.entries(obj).forEach(([key, value]) => {
+      nextAcc[key] = (nextAcc[key] || 0) + value;
     });
-    return newMerged;
+
+    return nextAcc;
   }, {});
 }
 
@@ -57,9 +59,14 @@ function mergeObjects(objects) {
  */
 function removeProperties(obj, keys) {
   const keysToRemove = new Set(keys);
-  return Object.entries(obj).reduce((result, [key, value]) => {
-    return keysToRemove.has(key) ? result : { ...result, [key]: value };
-  }, {});
+
+  const result = { ...obj };
+
+  keysToRemove.forEach((key) => {
+    delete result[key];
+  });
+
+  return result;
 }
 
 /**
